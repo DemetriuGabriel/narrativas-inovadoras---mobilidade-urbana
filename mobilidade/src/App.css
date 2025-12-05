@@ -15,7 +15,7 @@ body {
 }
 
 :root {
-  --card-margin: 15vw;
+  --card-margin: 10vw;
   /* Configurable margin */
 }
 
@@ -43,7 +43,7 @@ body {
 
 /* Base card style */
 .section {
-  width: 80%;
+  width: 30%;
   max-width: 600px;
   min-height: 200px;
   margin-bottom: 10vh;
@@ -55,7 +55,7 @@ body {
   align-items: center;
   justify-content: center;
 
-  font-size: 1.5rem;
+  font-size: 1 rem;
   color: #333;
   /* Darker text for better contrast on white cards */
   pointer-events: auto;

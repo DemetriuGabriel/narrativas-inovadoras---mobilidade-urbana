@@ -5,7 +5,7 @@ import App from "./App.jsx";
 import AlarmScreen from "./AlarmScreen.jsx";
 
 function Root() {
-  const [showAlarm, setShowAlarm] = useState(true);
+  const [showAlarm, setShowAlarm] = useState(import.meta.env.DEV ? window.location.search.includes("alarm=true") : true);
 
   return (
     <>

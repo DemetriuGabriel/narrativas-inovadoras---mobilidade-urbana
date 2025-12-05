@@ -9,12 +9,14 @@ const SubwayLines = ({ lines = [] }) => {
         if (!containerRef.current) return;
 
         const containerRect = containerRef.current.getBoundingClientRect();
+        const W = containerRect.width;
         const newPaths = [];
         const newStations = [];
 
         lines.forEach((line) => {
             const linePoints = [];
 
+            // 1. Gather Points from DOM
             line.stops.forEach((stopId) => {
                 const element = document.getElementById(stopId);
                 if (element) {
@@ -32,22 +34,19 @@ const SubwayLines = ({ lines = [] }) => {
                     const offset = 20; // Distance from card edge to station center
 
                     if (element.classList.contains('card-left') || offsetFromCenter < -50) {
-                        // Card is on Left -> Station on Left (Outer)
                         x = relativeLeft - offset;
                         y = relativeTop + (rect.height / 2);
                     } else if (element.classList.contains('card-right') || offsetFromCenter > 50) {
-                        // Card is on Right -> Station on Right (Outer)
                         x = relativeLeft + rect.width + offset;
                         y = relativeTop + (rect.height / 2);
                     } else {
-                        // Center -> Station on Bottom
                         x = relativeLeft + (rect.width / 2);
                         y = relativeTop + rect.height + offset;
                     }
 
                     const point = { x, y, id: stopId };
                     linePoints.push(point);
-                    if (!stopId.includes('path-control')) {
+                    if (!stopId.includes('path-control') && !stopId.includes('line-start')) {
                         newStations.push({ ...point, color: line.color, id: stopId });
                     }
                 }
@@ -55,11 +54,105 @@ const SubwayLines = ({ lines = [] }) => {
 
             if (linePoints.length < 2) return;
 
-            // Highway Routing with Rounded Corners
-            // Station -> Vertical Out -> (Curve) -> Diagonal Out -> (Curve) -> Vertical Highway -> (Curve) -> Diagonal In -> (Curve) -> Vertical In -> Station
-            const highwayOffset = 50;
-            const userVSegment = 150; // Requested Vertical segment length
-            const r = 10; // Corner radius
+            // Highway configuration
+            const highwayOffset = 35;
+            const userVSegment = 150;
+            const r = 10;
+
+            // -- START LOGIC OVERRIDE --
+            // We want the start point (i=0) to be calculated mathematically (45 deg projection) 
+            // regardless of where the ghost div is.
+            // We look at the FIRST SEGMENT: Start -> Point[1]
+            // We need to establish the highway X for this track.
+
+            // Look ahead to Point 1 to determine Highway X
+            const next = linePoints[1];
+            // Infer track side from Point 1 (assuming standard behavior)
+            const isLeftTrack = (next.x < W / 2);
+
+            // Calculate Target Highway X
+            let highwayX;
+            // Note: highwayX is usually calculated between two points. 
+            // Here we assume the highway is consistently 'inner' relative to the station.
+            if (isLeftTrack) {
+                // If station is Left, Highway is further Left? Or Inner? 
+                // Standard loop: highwayX = min(start, next) - offset.
+                // If we want consistent highway, let's fix it relative to 'next'.
+                // If next is Left Station, Highway is slightly Right of it? Or Left?
+                // Look at loop logic: 
+                // isLeftTrack (based on current/next average or logic) -> highwayX = min - offset.
+                // Let's stick to the rule: Highway is "Central" relative to stations?
+                // Actually, the loop determines highwayX dynamically per segment.
+                // Let's assume we want to hit the SAME highway as segment 0->1 would have.
+                // If Point 1 is at X1. Current (Start) is unknown. 
+                // Let's pick highwayX = next.x + offset (if Left track) or next.x - offset?
+                // Visual reference: Orange (Right) -> Highway is to the Left of it (Center-wards).
+                // Blue (Left) -> Highway is to the Right of it (Center-wards).
+                // So if Left Track: HighwayX > Next.x.
+                // Loop logic was: if isLeftTrack (x < mid), highwayX = min - offset. 
+                // Wait, logic says `min - offset` -> Further LEFT. Visual artifact shows highway on outside?
+                // Let's re-read loop:
+                // check `isLeftTrack = current.x < mid`.
+                // if Left: `min(curr, next) - offset`.
+                // So Highway is to the LEFT of the Leftmost point.
+                // This means Highway is on the FAR OUTER EDGE. 
+                // OK. So for Blue (Left), Highway is Left of `next`. `highwayX = next.x - offset`.
+                // For Orange (Right), Highway is Right of `next`. `highwayX = next.x + offset`.
+
+                highwayX = next.x - highwayOffset;
+            } else {
+                highwayX = next.x + highwayOffset;
+            }
+
+            // Define where the diagonal meets the highway (Vertical transition)
+            // Let's fix this at y = 150px (matching typical vSegment).
+            const transitionY = 150;
+
+            // Back-project 45 degrees from (highwayX, transitionY)
+            let startX, startY;
+
+            if (isLeftTrack) {
+                // Blue Line (Left)
+                // We want to enter from Top-Left or Top-Center?
+                // User said "Start 0%" -> Top Left corner.
+                // Path: Start -> Down-Right (Slope +1) -> Highway.
+                // Vector: (1, 1). Backwards: (-1, -1).
+                // Ray: x = highwayX - delta, y = transitionY - delta.
+                // Intersect with y=0: delta = transitionY. x = highwayX - transitionY.
+                const projectedX = highwayX - transitionY;
+                if (projectedX >= 0) {
+                    startX = projectedX;
+                    startY = 0;
+                } else {
+                    // Hits Left Edge (x=0) first.
+                    // 0 = highwayX - delta => delta = highwayX. 
+                    // y = transitionY - highwayX.
+                    startX = 0;
+                    startY = transitionY - highwayX;
+                }
+            } else {
+                // Orange Line (Right)
+                // Path: Start -> Down-Left (Slope -1) -> Highway.
+                // Vector: (-1, 1). Backwards: (1, -1).
+                // Ray: x = highwayX + delta, y = transitionY - delta.
+                // Intersect with y=0: delta = transitionY. x = highwayX + transitionY.
+                const projectedX = highwayX + transitionY;
+                if (projectedX <= W) {
+                    startX = projectedX;
+                    startY = 0;
+                } else {
+                    // Hits Right Edge (x=W) first.
+                    // W = highwayX + delta => delta = W - highwayX.
+                    // y = transitionY - (W - highwayX).
+                    startX = W;
+                    startY = transitionY - (W - highwayX);
+                }
+            }
+
+            // Override Point 0
+            linePoints[0] = { x: startX, y: startY, id: 'calculated-start' };
+            // -- END LOGIC OVERRIDE --
+
 
             let d = `M ${linePoints[0].x} ${linePoints[0].y}`;
 
@@ -67,7 +160,8 @@ const SubwayLines = ({ lines = [] }) => {
                 const current = linePoints[i];
                 const next = linePoints[i + 1];
 
-                const isLeftTrack = (current.x < containerRect.width / 2);
+                // RE-CALCULATE logic per segment as before
+                const isLeftTrack = (current.x < W / 2);
 
                 let highwayX;
                 if (isLeftTrack) {
@@ -84,53 +178,54 @@ const SubwayLines = ({ lines = [] }) => {
                 const dx1 = Math.abs(highwayX - current.x);
                 const dx2 = Math.abs(highwayX - next.x);
 
-                // Calculate Available Vertical Space for the 'vSegments'
-                // Formula: dy = vSegment1 + dx1 + dx2 + vSegment2
-                // We want vSegment1 = vSegment2 = userVSegment if possible.
-                // Available Y for straight vertical parts = dy - dx1 - dx2
                 const availableForV = dy - dx1 - dx2;
 
                 let actualVSegment = userVSegment;
 
-                if (availableForV < 2 * r) {
-                    // Extremely tight. Cannot fit diagonals + minimal curves.
-                    // Fallback to simpler path? or just straight line L
-                    // If we can't even fit the diagonals (dy < dx1+dx2), we definitely fallback.
-                    d += ` L ${next.x} ${next.y}`;
-                    continue;
-                } else if (availableForV < 2 * userVSegment) {
-                    // We have space for diagonals, but not full 150px vertical leads.
-                    // Shrink them to fit.
-                    actualVSegment = availableForV / 2;
-                    // Ensure we have at least 'r' space for the curve start?
-                    // if actualVSegment < r, the curve logic might look weird (control point behind start).
-                    // But Q path commands handle it mathematically. Visually might be a bit sharp/looped.
-                    // Let's clamp min to 'r'.
-                    if (actualVSegment < r) actualVSegment = r;
+                // Override for Start Segment
+                if (i === 0) {
+                    actualVSegment = 0; // Force immediate diagonal
+                } else {
+                    if (availableForV < 2 * r) {
+                        d += ` L ${next.x} ${next.y}`;
+                        continue;
+                    } else if (availableForV < 2 * userVSegment) {
+                        actualVSegment = availableForV / 2;
+                        if (actualVSegment < r) actualVSegment = r;
+                    }
                 }
-
-                // Construct Detailed Highway Path with Rounded Corners
 
                 const sign1 = (highwayX > current.x) ? 1 : -1;
                 const sign2 = (next.x > highwayX) ? 1 : -1;
 
-                // 1. Vertical Out from Current
+                // 1. Vertical Out
+                // For i=0, actualVSegment is 0, so this just moves to current.x, current.y
                 const y1 = current.y + actualVSegment;
-                d += ` L ${current.x} ${y1 - r}`;
-
-                // Curve 1: Vertical to Diagonal
-                d += ` Q ${current.x} ${y1} ${current.x + sign1 * r} ${y1 + r}`;
+                if (i !== 0) {
+                    d += ` L ${current.x} ${y1 - r}`;
+                    // Curve 1
+                    d += ` Q ${current.x} ${y1} ${current.x + sign1 * r} ${y1 + r}`;
+                } else {
+                    // Just move to start (already at M)
+                    // No vertical out, no curve 1.
+                    // The path effectively starts on the diagonal.
+                    // We need to verify where the diagonal STARTS.
+                    // L (highwayX - sign1 * r) (y_v2 - r)
+                    // current.y = startY. y1 = startY.
+                    // y_v2 = startY + dx1.
+                    // dx1 = Abs(highwayX - startX).
+                    // If we calculated startX correctly via trig, startY + dx1 SHOULD be precisely 'transitionY'.
+                    // So we draw line to (highwayX +/- r, transitionY - r).
+                }
 
                 // 2. Diagonal Out to Highway
                 const y_v2 = y1 + dx1;
-                // We go to (highwayX, y_v2) but stop 'r' short
                 d += ` L ${highwayX - sign1 * r} ${y_v2 - r}`;
 
                 // Curve 2: Diagonal to Vertical Highway
                 d += ` Q ${highwayX} ${y_v2} ${highwayX} ${y_v2 + r}`;
 
                 // 3. Vertical Highway Track
-                // We go down to y_v3 = next.y - actualVSegment - dx2
                 const y_v3 = next.y - actualVSegment - dx2;
                 d += ` L ${highwayX} ${y_v3 - r}`;
 
@@ -138,7 +233,6 @@ const SubwayLines = ({ lines = [] }) => {
                 d += ` Q ${highwayX} ${y_v3} ${highwayX + sign2 * r} ${y_v3 + r}`;
 
                 // 4. Diagonal In
-                // We go to (next.x, next.y - actualVSegment) which is y_v4
                 const y_v4 = next.y - actualVSegment;
                 d += ` L ${next.x - sign2 * r} ${y_v4 - r}`;
 
@@ -197,6 +291,7 @@ const SubwayLines = ({ lines = [] }) => {
                     fill="none"
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    opacity="0.8"
                 />
             ))}
             {stations.map((s, i) => (
