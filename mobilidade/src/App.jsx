@@ -18,6 +18,8 @@ function App() {
       zoom: 15.12
     });
 
+    mapRef.current.scrollZoom.disable()
+
     return () => {
       mapRef.current.remove()
     }
@@ -25,7 +27,7 @@ function App() {
 
   return (
     <>
-      <div id='map-container' ref={mapContainerRef}/>
+      <div id='map-container' ref={mapContainerRef} />
     </>
   )
 }
