@@ -6,12 +6,13 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import './App.css'
 import GradientStrip from './GradientStrip';
 import MapInteractionWrapper from './MapInteractionWrapper';
+import routeData from './assets/route.json';
 import SubwayLines from './SubwayLines';
 
 const chapters = {
   'intro': {
-    center: [-34.8717381, -8.0632174],
-    zoom: 15.12,
+    center: [-34.9951367, -8.0248778],
+    zoom: 30.12,
     pitch: 0,
     bearing: 0
   },
@@ -113,6 +114,28 @@ function App() {
     // Disable scroll zoom to prevent interference with page scrolling
     mapRef.current.scrollZoom.disable();
 
+    mapRef.current.on('load', () => {
+      mapRef.current.addSource('route', {
+        type: 'geojson',
+        data: routeData
+      });
+
+      mapRef.current.addLayer({
+        id: 'route',
+        type: 'line',
+        source: 'route',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#e77405', // Use the orange from OSM tags or similar
+          'line-width': 4,
+          'line-opacity': 0.8
+        }
+      });
+    });
+
     // Update state on move (optional feature user seemed to want)
     mapRef.current.on('move', () => {
       const mapCenter = mapRef.current.getCenter();
@@ -179,15 +202,15 @@ function App() {
           {/* Ghost Control Point for Orange Line */}
           <div id="path-control-1" style={{ position: 'absolute', top: '70vh', right: '10vw', width: '10px', height: '10px', pointerEvents: 'none' }} />
 
-          {/*<MapInteractionWrapper onBlock={handleMouseEnter} onUnblock={handleMouseLeave}>
-            <GradientStrip
-              topEdge="hard"
-              bottomEdge="soft"
-              height="100%"
-              top="0"
-              style={{ zIndex: 0, pointerEvents: 'auto' }}
-            />
-          </MapInteractionWrapper>*/}
+          {/* <MapInteractionWrapper onBlock={handleMouseEnter} onUnblock={handleMouseLeave}> */}
+          {/*  <GradientStrip/*}
+          //    topEdge="hard"
+          //    bottomEdge="soft"
+          //    height="100%"
+          //    top="0"
+          //    style={{ zIndex: 0, pointerEvents: 'auto' }}
+          //  />
+          //</MapInteractionWrapper>
 
           {/* Title - Text Only (VIEW: INTRO) */}
           <MapTrigger
@@ -213,8 +236,8 @@ function App() {
           <MapInteractionWrapper onBlock={handleMouseEnter} onUnblock={handleMouseLeave}>
             <div
               className="section card-filled card-left"
-              id="station-intro-1"
-              style={{ zIndex: 1, pointerEvents: 'auto' }}
+              id="intro-1"
+              style={{ zIndex: 1 }}
             >
               <h3>Mais um Dia</h3>
               <p>São cinco da manhã e o dia ainda nem começou direito, mas o sol, sempre apressado no Recife, já se espalha como se houvesse um para cada habitante da cidade. O corpo sente o peso de ontem, mas a rotina não espera, não pede licença, não pergunta se você está pronto. Apenas segue.</p>
@@ -228,8 +251,8 @@ function App() {
           <MapInteractionWrapper onBlock={handleMouseEnter} onUnblock={handleMouseLeave}>
             <div
               className="section card-filled card-right"
-              id="station-intro-2"
-              style={{ zIndex: 1, pointerEvents: 'auto' }}
+              id="intro-2"
+              style={{ zIndex: 1 }}
             >
               <p>Do mesmo jeito começa, de segunda a sexta, a jornada de Mirelly, jovem aprendiz durante o dia e universitária de Enfermagem à noite, que atravessa a Região Metropolitana para mais um dia. Uma maratona que ninguém escolhe, mas milhões enfrentam.</p>
             </div>
@@ -242,10 +265,10 @@ function App() {
           <MapInteractionWrapper onBlock={handleMouseEnter} onUnblock={handleMouseLeave}>
             <div
               className="section card-filled card-left"
-              id="station-intro-3"
-              style={{ zIndex: 1, pointerEvents: 'auto' }}
+              id="intro-3"
+              style={{ zIndex: 1 }}
             >
-              <p>Moradora de Camaragibe, mais precisamente do bairro de Alberto Maia, “o final de Camaragibe”, como ela mesma costuma dizer, Mirelly desperta às cinco da manhã. Não há luxo de tempo. Ela corre para se arrumar, tomar banho e comer alguma coisa antes de sair. Acordar mais cedo significaria abrir mão de quinze minutinhos daquele sono que, para uma rotina como a dela, vale ouro. Às 5:50, ela tranca a porta e desce a rua rumo à Estação Camaragibe. É o início de mais um dia igual aos outros.</p>
+              <p>Moradora de Camaragibe, mais precisamente do bairro de Alberto Maia, “o final de Camaragibe”, como ela mesma costuma dizer, Mirelly desperta às cinco da manhã. Não há luxo de tempo. Ela corre para se arrumar, tomar banho e comer alguma coisa antes de sair. Acordar mais cedo significaria abrir mão de quinze minutinhos daquele sono que, para uma rotina como a dela, vale ouro. </p>
             </div>
           </MapInteractionWrapper>
         </div>
@@ -260,7 +283,7 @@ function App() {
             id="station-metro-1"
             style={{ pointerEvents: 'auto' }}
           >
-            <p>Ela pega o metrô na última estação da Linha Centro às 6h10. Mirelly segue todo o percurso até a Estação Recife, espremida entre mochilas, cotovelos e sonos acumulados. Lá se vão uma hora e dez minutos.</p>
+            <p>Às 5:50, ela tranca a porta e desce a rua rumo à Estação Camaragibe. É o início de mais um dia igual aos outros. Ela pega o metrô na última estação da Linha Centro às 6h10. Mirelly segue todo o percurso até a Estação Recife, espremida entre mochilas, cotovelos e sonos acumulados. Lá se vão uma hora e dez minutos.</p>
           </div>
         </MapInteractionWrapper>
 
