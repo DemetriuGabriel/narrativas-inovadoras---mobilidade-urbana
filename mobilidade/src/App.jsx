@@ -12,7 +12,9 @@ import extraRouteData from './assets/osm_elements_part5.json';
 import { preloadChapter } from './preloadUtils';
 import AlarmScreen from './AlarmScreen';
 import Content from './Content';
+
 import PrologueSection from './PrologueSection';
+import DevCameraHUD from './DevCameraHUD';
 
 
 preloadChapter('est-camaragibe');
@@ -111,28 +113,34 @@ function App() {
   const [center, setCenter] = useState([-34.9951367, -8.0248778])
   const [zoom, setZoom] = useState(15.12)
 
+  // Track map instance for DevHUD
+  const [mapInstance, setMapInstance] = useState(null);
+
   useEffect(() => {
     mapboxgl.accessToken = 'pk.eyJ1IjoiZGpjbzIxIiwiYSI6ImNtaXA3cDBlejBhaW0zZG9sbXZpOHFhYnQifQ.Bo43glKkuVwj310Z-L58oQ'
 
     // Backward Tour: Start at the END (camaragibe-recife) if alarm is shown
     const initialView = showAlarm ? chapters['camaragibe-recife'] : chapters['est-camaragibe'];
 
-    mapRef.current = new mapboxgl.Map({
+    const map = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
+      style: 'mapbox://styles/mapbox/dark-v11',
       center: initialView.center,
       zoom: initialView.zoom,
       pitch: initialView.pitch,
       bearing: initialView.bearing,
     });
 
+    mapRef.current = map;
+    setMapInstance(map);
+
     // Disable scroll zoom
-    mapRef.current.scrollZoom.disable();
+    map.scrollZoom.disable();
 
     // Update state on move
-    mapRef.current.on('move', () => {
-      const mapCenter = mapRef.current.getCenter();
-      const mapZoom = mapRef.current.getZoom();
+    map.on('move', () => {
+      const mapCenter = map.getCenter();
+      const mapZoom = map.getZoom();
       setCenter([mapCenter.lng, mapCenter.lat]);
       setZoom(mapZoom);
     });
@@ -174,7 +182,7 @@ function App() {
           'line-cap': 'round'
         },
         paint: {
-          'line-color': '#e77405', // Use the orange from OSM tags or similar
+          'line-color': '#FF0000', // Use the orange from OSM tags or similar
           'line-width': 4,
           'line-opacity': 0.8
         }
@@ -196,7 +204,7 @@ function App() {
           'minzoom': 15,
           'paint': {
             'fill-extrusion-opacity': 1,
-            'fill-extrusion-color': '#CECECE',
+            'fill-extrusion-color': '#333333',
             'fill-extrusion-height': [
               'interpolate',
               ['linear'],
@@ -411,6 +419,7 @@ function App() {
       {showAlarm && <AlarmScreen onDismiss={handleAlarmDismiss} />}
 
       <MapInteractionContext.Provider value={{ isInteractionBlocked, setInteractionBlocked }}>
+        {import.meta.env.DEV && <DevCameraHUD map={mapInstance} />}
         {/* Map Container */}
         <div className='map-container' ref={mapContainerRef} style={{ position: 'fixed', top: 0, bottom: 0, width: '100%', zIndex: 0 }} />
 
