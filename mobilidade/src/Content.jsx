@@ -4,22 +4,7 @@ import SubwayLines from './SubwayLines';
 import InteractionBlocker from './InteractionBlocker';
 import { narrativeData } from './narrativeData';
 
-// Map Trigger Component (moved here as it is used in content)
-const MapTrigger = ({ id, style }) => (
-    <div
-        className="map-trigger"
-        id={id}
-        style={{
-            marginBottom: '10vh',
-            height: '1px',
-            width: '100%',
-            pointerEvents: 'none',
-            ...style
-        }}
-    />
-);
-
-const Content = () => {
+const Content = ({ onChapterChange }) => {
     // Dynamic Background State
     // Scroll Interpolation Logic for Prologue -> Title (Black -> White)
     const titleZoneRef = useRef(null);
@@ -116,8 +101,18 @@ const Content = () => {
                             </div>
                         </InteractionBlocker>
 
+                        {/* Remote Style Trigger: framer-motion viewport detection */}
                         {card.triggerAfter && (
-                            <MapTrigger id={card.triggerAfter} />
+                            <motion.div
+                                onViewportEnter={() => onChapterChange && onChapterChange(card.triggerAfter)}
+                                viewport={{ amount: 0.5 }}
+                                style={{
+                                    marginBottom: '10vh',
+                                    height: '1px',
+                                    width: '100%',
+                                    pointerEvents: 'none'
+                                }}
+                            />
                         )}
                     </React.Fragment>
                 ))}

@@ -7,62 +7,54 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import './App.css'
 import InteractionBlocker from './InteractionBlocker';
 import { MapInteractionContext } from './MapInteractionContext';
+import routeData from './assets/route.json';
+import extraRouteData from './assets/osm_elements_part5.json';
 import { preloadChapter } from './preloadUtils';
 import AlarmScreen from './AlarmScreen';
 import Content from './Content';
 import PrologueSection from './PrologueSection';
 
 
-preloadChapter('intro');
-
-
+preloadChapter('est-camaragibe');
 
 const chapters = {
-  'intro': {
-    center: [-34.8717381, -8.0632174],
-    zoom: 15.12,
-    pitch: 0,
-    bearing: 0
-  },
-  'intro-1': {
-    center: [-34.8717381, -8.0632174],
-    zoom: 15.5,
-    pitch: 10,
-    bearing: 0
-  },
-  'intro-2': {
-    center: [-34.8717381, -8.0632174],
+  'est-camaragibe': {
+    center: [-34.9951367, -8.0248778],
     zoom: 16,
-    pitch: 20,
-    bearing: 10
-  },
-  'intro-3': {
-    center: [-34.8717381, -8.0632174],
-    zoom: 16.5,
-    pitch: 30,
-    bearing: -10
-  },
-  'metro-1': {
-    center: [-34.8847, -8.0683], // Estação Recife
-    zoom: 14,
-    pitch: 45,
-    bearing: 15
-  },
-  'metro-2': {
-    center: [-34.8847, -8.0683],
-    zoom: 13, // Zoom out slightly
-    pitch: 30,
-    bearing: 0
-  },
-  'metro-3': {
-    center: [-34.8847, -8.0683],
-    zoom: 12, // Zoom out more for context
     pitch: 0,
     bearing: 0
+  },
+  'est-camaragibe-2': {
+    center: [-34.9951367, -8.0248778],
+    zoom: 12,
+    pitch: 0,
+    bearing: 0
+  },
+  'est-recife': {
+    center: [-34.8858867, -8.0691144],
+    zoom: 16,
+    pitch: 0,
+    bearing: 0
+  },
+  'novotel': {
+    center: [-34.8753267, -8.0695504],
+    zoom: 16,
+    pitch: 0,
+    bearing: 0
+  },
+  'recife': {
+    center: [-34.8959673, -8.0760724],
+    zoom: 12,
+    pitch: 0,
+    bearing: 0
+  },
+  'camaragibe-recife': {
+    center: [-34.95, -8.08],
+    zoom: 13,
+    pitch: 60,
+    bearing: -300
   }
 };
-
-
 
 function App() {
 
@@ -93,9 +85,14 @@ function App() {
   // Function to handle alarm dismissal
   const handleAlarmDismiss = () => {
     setShowAlarm(false);
+    if (mapRef.current) {
+      mapRef.current.flyTo({
+        ...chapters['est-camaragibe'],
+        essential: true,
+        duration: 3000 // Slower fly for effect
+      });
+    }
   };
-
-
 
   // Register Service Worker for Tile Caching
   useEffect(() => {
@@ -110,17 +107,15 @@ function App() {
     }
   }, []);
 
-  // State to track map position (optional, kept from user's attempt)
-  const [center, setCenter] = useState([-34.8717381, -8.0632174])
+  // State to track map position (optional)
+  const [center, setCenter] = useState([-34.9951367, -8.0248778])
   const [zoom, setZoom] = useState(15.12)
-
-
 
   useEffect(() => {
     mapboxgl.accessToken = 'pk.eyJ1IjoiZGpjbzIxIiwiYSI6ImNtaXA3cDBlejBhaW0zZG9sbXZpOHFhYnQifQ.Bo43glKkuVwj310Z-L58oQ'
 
-    // Reverse Tour: Start at the END (metro-3)
-    const initialView = showAlarm ? chapters['metro-3'] : chapters['intro'];
+    // Backward Tour: Start at the END (camaragibe-recife) if alarm is shown
+    const initialView = showAlarm ? chapters['camaragibe-recife'] : chapters['est-camaragibe'];
 
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
@@ -131,10 +126,10 @@ function App() {
       bearing: initialView.bearing,
     });
 
-    // Disable scroll zoom to prevent interference with page scrolling
+    // Disable scroll zoom
     mapRef.current.scrollZoom.disable();
 
-    // Update state on move (optional feature user seemed to want)
+    // Update state on move
     mapRef.current.on('move', () => {
       const mapCenter = mapRef.current.getCenter();
       const mapZoom = mapRef.current.getZoom();
@@ -142,16 +137,55 @@ function App() {
       setZoom(mapZoom);
     });
 
-    // Reverse Tour Logic
     mapRef.current.on('load', () => {
-      // Insert the layer beneath the first symbol layer.
+
+      // Add Extra Route (Part 5) - Blue
+      mapRef.current.addSource('extra-route', {
+        type: 'geojson',
+        data: extraRouteData
+      });
+
+      mapRef.current.addLayer({
+        id: 'extra-route',
+        type: 'line',
+        source: 'extra-route',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#003399', // Blue
+          'line-width': 4,
+          'line-opacity': 0.8
+        }
+      });
+
+      mapRef.current.addSource('route', {
+        type: 'geojson',
+        data: routeData
+      });
+
+      mapRef.current.addLayer({
+        id: 'route',
+        type: 'line',
+        source: 'route',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#e77405', // Use the orange from OSM tags or similar
+          'line-width': 4,
+          'line-opacity': 0.8
+        }
+      });
+
+      // 3D BUILDINGS (From Remote)
       const layers = mapRef.current.getStyle().layers;
       const labelLayerId = layers.find(
         (layer) => layer.type === 'symbol' && layer.layout['text-field']
       ).id;
 
-      // The 'building' layer in the Mapbox Streets vector tileset contains building height data
-      // from OpenStreetMap.
       mapRef.current.addLayer(
         {
           'id': 'add-3d-buildings',
@@ -163,10 +197,6 @@ function App() {
           'paint': {
             'fill-extrusion-opacity': 1,
             'fill-extrusion-color': '#CECECE',
-
-            // Use an 'interpolate' expression to
-            // add a smooth transition effect to
-            // the buildings as the user zooms in.
             'fill-extrusion-height': [
               'interpolate',
               ['linear'],
@@ -191,14 +221,10 @@ function App() {
         labelLayerId
       );
 
-      // Initialize Flashlight Effect
-      // 1. Configure Layers to be hidden by default but distinct (using feature-state)
+      // Initialize Flashlight Effect Layers (From Remote)
       const layersToEffect = ['poi-label', 'transit-label', 'road-label', 'road-number-shield', 'road-exit-shield'];
-
       layersToEffect.forEach(layerId => {
         if (mapRef.current.getLayer(layerId)) {
-          // Set initial opacity to 0 (hidden)
-          // We use a case expression: if feature-state.hover is true, opacity 1, else 0
           mapRef.current.setPaintProperty(layerId, 'text-opacity', [
             'case',
             ['boolean', ['feature-state', 'hover'], false],
@@ -211,27 +237,22 @@ function App() {
             1,
             0
           ]);
-
-          // Add transition for smooth in/out
           mapRef.current.setPaintProperty(layerId, 'text-opacity-transition', { duration: 300, delay: 0 });
           mapRef.current.setPaintProperty(layerId, 'icon-opacity-transition', { duration: 300, delay: 0 });
         }
       });
 
       if (showAlarm) {
-        const chapterKeys = Object.keys(chapters); // ['intro', ..., 'metro-3']
-        // We want to go from metro-3 (end) BACK to intro (start)
-        // We are already at metro-3. Next target is metro-2.
-
+        const chapterKeys = Object.keys(chapters);
+        // We want to go from end BACK to start
         let currentIndex = chapterKeys.length - 1;
 
         const playNextStep = () => {
-          // Check if tour is still active
-          if (!isTouringRef.current) return;
+          // Check if tour is still active (alarm still visible)
+          if (!alarmVisibleRef.current) return;
 
           currentIndex--;
           if (currentIndex < 0) {
-            // Stop logic: we reached the start
             return;
           }
 
@@ -239,13 +260,12 @@ function App() {
 
           mapRef.current.flyTo({
             ...targetChapter,
-            duration: 2000, // Fast jump
+            duration: 2000,
             essential: true
           });
 
           mapRef.current.once('moveend', () => {
-            // Only continue if touring is active
-            if (isTouringRef.current) {
+            if (alarmVisibleRef.current) {
               playNextStep();
             }
           });
@@ -259,14 +279,13 @@ function App() {
     return () => {
       mapRef.current.remove()
     }
-  }, [])
+  }, []) // Re-run only on mount (or if we wanted to change ID, but keeping empty is fine)
 
   // Interaction Blocking Logic & Flashlight Tracking
   const [isInteractionBlocked, setInteractionBlocked] = useState(false);
   const isInteractionBlockedRef = useRef(false);
   const hoveredFeatures = useRef(new Set());
 
-  // Sync state to ref for event handlers
   useEffect(() => {
     isInteractionBlockedRef.current = isInteractionBlocked;
   }, [isInteractionBlocked]);
@@ -286,10 +305,9 @@ function App() {
     if (!mapRef.current) return;
     const map = mapRef.current;
 
-    // Re-implemented logic for correct Set usage
+
     const handleFlashlight = (e) => {
       if (isInteractionBlockedRef.current) {
-        // Clear all
         hoveredFeatures.current.forEach(f => {
           map.setFeatureState({ source: f.source, sourceLayer: f.sourceLayer, id: f.id }, { hover: false });
         });
@@ -314,10 +332,6 @@ function App() {
         if (f.id !== undefined) {
           const key = `${f.source}|${f.sourceLayer}|${f.id}`;
           currentFeaturesMap.set(key, { source: f.source, sourceLayer: f.sourceLayer, id: f.id });
-
-          // Ensure it is 'hovered'
-          // Optimization: only set if it wasn't already? Mapbox handles redundant calls well? 
-          // Creating a setFeatureState call every move for every feature in radius is okay-ish (10-20 features).
           map.setFeatureState({ source: f.source, sourceLayer: f.sourceLayer, id: f.id }, { hover: true });
         }
       });
@@ -334,74 +348,47 @@ function App() {
 
     map.on('mousemove', handleFlashlight);
 
-    // Cleanup on unmount or map change
-    // Using a stable function reference is key or map.off won't work if defined inside.
-    // Putting it inside useEffect is fine.
-
     return () => {
       if (map) map.off('mousemove', handleFlashlight);
     };
-  }, []); // Empty dependency array, depends on Ref for blocked state
+  }, []);
 
-  // Removed legacy handlers handleMouseEnter/Leave
-
-  // Handlers removed in favor of Context
-
-  useEffect(() => {
+  const handleChapterChange = (chapterName) => {
     if (showAlarm) return;
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          isTouringRef.current = false; // Stop the auto-tour
-          const chapterName = entry.target.getAttribute('id');
-          const chapter = chapters[chapterName];
-          if (chapter && mapRef.current) {
-            mapRef.current.flyTo({
-              ...chapter,
-              essential: true,
-            });
-
-            // Preload next chapter
-            const chapterKeys = Object.keys(chapters);
-            const currentIndex = chapterKeys.indexOf(chapterName);
-            const nextChapterName = chapterKeys[currentIndex + 1];
-            if (nextChapterName) {
-              const nextChapter = chapters[nextChapterName];
-              preloadChapter(mapRef.current, nextChapter);
-            }
-          }
-        }
+    // Direct FlyTo (Remote Style) - No observer needed
+    const chapter = chapters[chapterName];
+    if (chapter && mapRef.current) {
+      mapRef.current.flyTo({
+        ...chapter,
+        essential: true,
       });
-    }, { threshold: 0.5 });
 
-    // OBSERVE MAP TRIGGERS
-    document.querySelectorAll('.map-trigger').forEach(trigger => {
-      observer.observe(trigger);
-    });
-
-    return () => {
-      observer.disconnect();
+      // Preload next chapter
+      const chapterKeys = Object.keys(chapters);
+      const currentIndex = chapterKeys.indexOf(chapterName);
+      const nextChapterName = chapterKeys[currentIndex + 1];
+      if (nextChapterName) {
+        const nextChapter = chapters[nextChapterName];
+        preloadChapter(mapRef.current, nextChapter);
+      }
     }
-  }, [showAlarm]); // Re-run when alarm state changes
-
-  // Handlers removed in favor of Context
+  };
 
   return (
     <>
       {showAlarm && <AlarmScreen onDismiss={handleAlarmDismiss} />}
 
-
-
       <MapInteractionContext.Provider value={{ isInteractionBlocked, setInteractionBlocked }}>
-        {/* Map Container - Z-Index 0 implicitly (or -1) */}
+        {/* Map Container */}
         <div className='map-container' ref={mapContainerRef} style={{ position: 'fixed', top: 0, bottom: 0, width: '100%', zIndex: -1 }} />
 
-        {/* Wrapper handles layout and conditional padding */}
+        {/* Wrapper */}
         <div className={!showAlarm ? "content-container" : ""} style={{ position: 'relative', zIndex: 1, width: '100%' }}>
           <div style={{ position: 'relative', width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <PrologueSection transparent={!showAlarm} />
-            {!showAlarm && <Content />}
+            {/* Pass handleChapterChange to Content */}
+            {!showAlarm && <Content onChapterChange={handleChapterChange} />}
           </div>
         </div>
       </MapInteractionContext.Provider >
