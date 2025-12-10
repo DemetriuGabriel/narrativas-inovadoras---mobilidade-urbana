@@ -8,6 +8,7 @@ import GradientStrip from './GradientStrip';
 import InteractionBlocker from './InteractionBlocker';
 import { MapInteractionContext } from './MapInteractionContext';
 import routeData from './assets/route.json';
+import extraRouteData from './assets/osm_elements_part5.json';
 import SubwayLines from './SubwayLines';
 import { preloadChapter } from './preloadUtils';
 import AlarmScreen from './AlarmScreen';
@@ -25,7 +26,7 @@ const chapters = {
     bearing: 0
   },
   'intro-1': {
-    center: [-34.8717381, -8.0632174],
+    center: [-34.9951367, -8.0248778],
     zoom: 15.5,
     pitch: 10,
     bearing: 0
@@ -145,7 +146,7 @@ function App() {
   }, []);
 
   // State to track map position (optional, kept from user's attempt)
-  const [center, setCenter] = useState([-34.8717381, -8.0632174])
+  const [center, setCenter] = useState([-34.9951367, -8.0248778])
   const [zoom, setZoom] = useState(15.12)
 
   // Dynamic Background State
@@ -171,6 +172,27 @@ function App() {
     mapRef.current.scrollZoom.disable();
 
     mapRef.current.on('load', () => {
+      // Add Extra Route (Part 5) - Blue
+      mapRef.current.addSource('extra-route', {
+        type: 'geojson',
+        data: extraRouteData
+      });
+
+      mapRef.current.addLayer({
+        id: 'extra-route',
+        type: 'line',
+        source: 'extra-route',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': '#003399', // Blue
+          'line-width': 4,
+          'line-opacity': 0.8
+        }
+      });
+
       mapRef.current.addSource('route', {
         type: 'geojson',
         data: routeData
@@ -518,11 +540,6 @@ function App() {
             {/* === ZONE 1: WHITE BACKGROUND === */}
             <div className="bg-zone" data-opacity="1" style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
-              {/* Title - Text Only (VIEW: INTRO) */}
-              <MapTrigger
-                id="intro"
-                style={{ position: 'absolute', top: '20vh' }}
-              />
               <div
                 className="section"
                 style={{ zIndex: 1, position: 'relative' }}
@@ -534,9 +551,11 @@ function App() {
                 <div id="line-start-orange" style={{ position: 'absolute', top: '15vh', left: '65%', height: '10px', width: '10px' }} />
               </div>
 
-
-              {/* TRIGGER: INTRO-1 */}
-              <MapTrigger id="intro-1" />
+              {/* Title - Text Only (VIEW: INTRO) */}
+              <MapTrigger
+                id="intro"
+                style={{ position: 'absolute', top: '20vh' }}
+              />
 
               {/* Card 1: Mais um Dia (Left) */}
               <InteractionBlocker>
@@ -555,8 +574,8 @@ function App() {
             {/* === ZONE 2: TRANSPARENT BACKGROUND === */}
             <div className="bg-zone" data-opacity="0" style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
-              {/* TRIGGER: INTRO-2 */}
-              <MapTrigger id="intro-2" />
+              {/* TRIGGER: INTRO-1 */}
+              <MapTrigger id="intro-1" />
 
               {/* Card 2: Mirelly (Right) */}
               <InteractionBlocker>
