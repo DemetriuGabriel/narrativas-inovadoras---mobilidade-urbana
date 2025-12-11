@@ -192,17 +192,41 @@ const DigitalClock = ({ time, targetRef }) => {
     }, [isActive, scrollYProgress, time]);
 
     return (
-        <h3 style={{
-            marginTop: 0,
-            marginBottom: '0.5rem',
-            color: theme.colors.transport.metroLine,
-            fontFamily: '"Share Tech Mono", monospace',
-            fontSize: '1.5rem',
-            letterSpacing: '0.05em',
-            animation: isBlinking ? 'blink 0.5s step-end infinite' : 'none'
-        }}>
-            {displayTime}
-        </h3>
+        <div style={{ position: 'relative', display: 'inline-block' }}>
+            {/* Ghost Background (88:88) */}
+            <h3 style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                marginTop: 0,
+                marginBottom: '0.5rem',
+                color: 'rgba(0, 0, 0, 0.15)', // Light ghost effect
+                fontFamily: '"DSEG7-Classic", monospace',
+                fontStyle: 'italic',
+                fontSize: '1.5rem',
+                letterSpacing: '0.05em',
+                pointerEvents: 'none',
+                zIndex: 0
+            }}>
+                88:88
+            </h3>
+
+            {/* Actual Time */}
+            <h3 style={{
+                position: 'relative',
+                marginTop: 0,
+                marginBottom: '0.5rem',
+                color: theme.colors.transport.metroLine,
+                fontFamily: '"DSEG7-Classic", monospace',
+                fontStyle: 'italic',
+                fontSize: '1.5rem',
+                letterSpacing: '0.05em',
+                animation: isBlinking ? 'blink 0.5s step-end infinite' : 'none',
+                zIndex: 1
+            }}>
+                {displayTime}
+            </h3>
+        </div>
     );
 };
 
@@ -389,8 +413,8 @@ const Content = ({ onChapterChange }) => {
                         return (
                             <div key={item.uniqueKey || item.id} className="section" style={{
                                 width: '100%',
-                                maxWidth: '1200px',
-                                margin: '5vh auto',
+                                maxWidth: item.componentName === 'moto-accident-simulation' ? '100%' : '1200px',
+                                margin: item.componentName === 'moto-accident-simulation' ? '0' : '5vh auto',
                                 padding: '0',
                                 pointerEvents: 'auto',
                                 zIndex: 2

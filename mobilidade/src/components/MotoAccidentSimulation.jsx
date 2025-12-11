@@ -247,42 +247,61 @@ const MotoAccidentSimulation = ({ index, setRenderLimit }) => {
     }, []);
 
     return (
-        <div style={{ position: 'relative', width: '100%', height: '600px', backgroundColor: '#111', overflow: 'hidden', borderRadius: '8px' }}>
-            {/* UI Elements */}
+        <div style={{
+            position: 'relative',
+            width: '100vw',
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            pointerEvents: 'none' // Allow click-through on wrapper if needed, but inner needs auto
+        }}>
             <div style={{
-                position: 'absolute',
-                top: '16px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                padding: '8px 14px',
-                background: 'rgba(0, 0, 0, 0.6)',
-                color: '#f5f5f5',
-                borderRadius: '999px',
-                fontSize: '14px',
-                pointerEvents: 'none',
-                zIndex: 10,
-                whiteSpace: 'nowrap'
+                position: 'relative',
+                width: 'calc(100vw - (2 * var(--card-margin)))', // 10vw on each side
+                height: '600px',
+                backgroundColor: '#111',
+                overflow: 'hidden',
+                borderRadius: '8px',
+                pointerEvents: 'auto', // Re-enable pointer events for the simulation
+                boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
             }}>
-                Role para BAIXO para continuar a história ➡️
+                {/* UI Elements */}
+                <div style={{
+                    position: 'absolute',
+                    top: '16px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    padding: '8px 14px',
+                    background: 'rgba(0, 0, 0, 0.6)',
+                    color: '#f5f5f5',
+                    borderRadius: '999px',
+                    fontSize: '14px',
+                    pointerEvents: 'none',
+                    zIndex: 10,
+                    whiteSpace: 'nowrap'
+                }}>
+                    Role para BAIXO para continuar a história ➡️
+                </div>
+                <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    color: '#f5f5f5',
+                    zIndex: 20,
+                    fontWeight: 700,
+                    textAlign: 'center',
+                    pointerEvents: 'none',
+                    mixBlendMode: 'difference'
+                }}>
+                    <span style={{ display: 'block', fontSize: '120px', lineHeight: 1 }}>{mortes}</span>
+                    <span style={{ display: 'block', fontSize: '28px', opacity: 0.95, maxWidth: '700px', margin: '0 auto' }}>
+                        mortes por acidente de moto nesse ano
+                    </span>
+                </div>
+                <div ref={sceneRef} style={{ width: '100%', height: '100%' }} />
             </div>
-            <div style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                color: '#f5f5f5',
-                zIndex: 20,
-                fontWeight: 700,
-                textAlign: 'center',
-                pointerEvents: 'none',
-                mixBlendMode: 'difference'
-            }}>
-                <span style={{ display: 'block', fontSize: '120px', lineHeight: 1 }}>{mortes}</span>
-                <span style={{ display: 'block', fontSize: '28px', opacity: 0.95, maxWidth: '700px', margin: '0 auto' }}>
-                    mortes por acidente de moto nesse ano
-                </span>
-            </div>
-            <div ref={sceneRef} style={{ width: '100%', height: '100%' }} />
         </div>
     );
 };
