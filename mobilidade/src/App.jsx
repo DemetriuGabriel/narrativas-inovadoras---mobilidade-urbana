@@ -10,6 +10,7 @@ import InteractionBlocker from './InteractionBlocker';
 import { MapInteractionContext } from './MapInteractionContext';
 import routeData from './assets/route.json';
 import extraRouteData from './assets/osm_elements_part5.json';
+import novohotelDerbyData from './assets/osm_elements_part6.json';
 import { preloadChapter } from './preloadUtils';
 import AlarmScreen from './AlarmScreen';
 import Content from './Content';
