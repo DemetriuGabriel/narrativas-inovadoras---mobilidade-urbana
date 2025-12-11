@@ -6,19 +6,19 @@ São cinco da manhã, o dia ainda nem começou direito, mas o sol, sempre apress
 [component: title](O Preço da Mobilidade)
 
 [card: card-camaragibe-recife]
-[5:00] Do mesmo jeito começa, de segunda a sexta, a jornada de Bárbara Mirelly, de 23 anos, jovem aprendiz durante o dia e universitária de Enfermagem à noite, que atravessa a Região Metropolitana para mais um dia.
+[05:00] Do mesmo jeito começa, de segunda a sexta, a jornada de Bárbara Mirelly, de 23 anos, jovem aprendiz durante o dia e universitária de Enfermagem à noite, que atravessa a Região Metropolitana para mais um dia.
 
 [card: card-camaragibe]
-[5:50] Moradora de Camaragibe, desperta às cinco da manhã para trancar a porta e descer a rua rumo à última estação da Linha Centro.
+[05:50] Moradora de Camaragibe, desperta às cinco da manhã para trancar a porta e descer a rua rumo à última estação da Linha Centro.
 
 [card: card-percurso]
-[6:10] Bárbara segue todo o percurso até a Estação Recife, espremida entre mochilas, cotovelos e sonos acumulados. Lá se vão uma hora e dez minutos.
+[06:10] Bárbara segue todo o percurso até a Estação Recife, espremida entre mochilas, cotovelos e sonos acumulados. Lá se vão uma hora e dez minutos.
 
 [card: card-recife]
-[7:20] A corrida da manhã ainda não terminou. Falta ainda uma última perna: 20 minutos da Estação Recife até o Cais de Santa Rita. Em pé, espremida e o ônibus, quase sempre com o ar condicionado quebrado. Vinte minutos que, para quem viaja como sardinha em lata, se alongam como horas.
+[07:20] A corrida da manhã ainda não terminou. Falta ainda uma última perna: 20 minutos da Estação Recife até o Cais de Santa Rita. Em pé, espremida e o ônibus, quase sempre com o ar condicionado quebrado. Vinte minutos que, para quem viaja como sardinha em lata, se alongam como horas.
 
 [card: card-etapa-final]
-[7:45] A etapa final: cinco minutos de caminhada até o trabalho. Bárbara finalmente pode respirar.
+[07:45] A etapa final: cinco minutos de caminhada até o trabalho. Bárbara finalmente pode respirar.
 
 As quase duas horas de deslocamento apenas para a ida são apenas um fragmento de um quadro muito maior, que afeta milhares de pessoas como ela. Há mais de uma década o metrô não recebe nenhuma expansão significativa, e essa estagnação é um dos motivos centrais para sua perda de relevância na mobilidade da RMR. O resultado se espalha por toda a rede: ônibus lotados, integração falha, terminais que parecem ter parado no tempo.
 
