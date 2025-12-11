@@ -47,15 +47,25 @@ export function parseNarrative(text) {
         }
 
         // Check for [component] syntax
-        const componentMatch = block.match(/^\[component:\s*([\w-]+)\]/i);
+        // Supports: [component: name] or [component: name](content)
+        const componentMatch = block.match(/^\[component:\s*([\w-]+)\](?:\(([\s\S]*?)\))?/i);
         if (componentMatch) {
             flushTextBlock();
             const componentName = componentMatch[1];
+            let content = componentMatch[2]; // Captured content inside ()
+
+            // If no content in (), treat the rest of the block as content (legacy support/fallback)
+            if (content === undefined) {
+                content = block.replace(/^\[component:\s*[\w-]+\]\s*/i, '').trim();
+            } else {
+                content = content.trim();
+            }
+
             items.push({
                 type: 'component',
                 id: `component-${Math.random().toString(36).substr(2, 9)}`,
                 componentName: componentName,
-                content: block.replace(/^\[component:\s*[\w-]+\]\s*/i, '').trim() // Optional content if any
+                content: content
             });
             return;
         }

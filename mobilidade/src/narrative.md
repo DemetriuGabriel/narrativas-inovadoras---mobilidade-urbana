@@ -1,3 +1,10 @@
+[component: prequel](
+## O DIA NASCE, NÓS AINDA NÃO
+São cinco da manhã, o dia ainda nem começou direito, mas o sol, sempre apressado no Recife, já se espalha como se houvesse um para cada habitante da cidade. O corpo sente o peso de ontem, mas a rotina não espera, não pede licença, não pergunta se você está pronto. Apenas segue.
+)
+
+[component: title](O Preço da Mobilidade)
+
 [card: card-camaragibe-recife]
 [5:00] Do mesmo jeito começa, de segunda a sexta, a jornada de Bárbara Mirelly, de 23 anos, jovem aprendiz durante o dia e universitária de Enfermagem à noite, que atravessa a Região Metropolitana para mais um dia.
 
