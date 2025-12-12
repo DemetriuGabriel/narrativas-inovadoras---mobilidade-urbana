@@ -294,11 +294,7 @@ const NarrativeCard = ({ card, index, onChapterChange, forwardRef }) => {
     );
 };
 
-const Content = ({ onChapterChange }) => {
-    // State for narrative items
-    const [narrativeItems, setNarrativeItems] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-
+const NarrativeDisplay = ({ onChapterChange, narrativeItems }) => {
     // Dynamic Background State
     // Scroll Interpolation Logic for Prologue -> Title (Black -> White)
     const titleZoneRef = useRef(null);
@@ -308,14 +304,6 @@ const Content = ({ onChapterChange }) => {
     });
 
     const bgOverlayColor = useTransform(titleProgress, [0, 1], [theme.colors.background.prologue, theme.colors.background.title]);
-
-    // Load Data on Mount
-    useEffect(() => {
-        fetchNarrativeData().then(data => {
-            setNarrativeItems(data.items);
-            setIsLoading(false);
-        });
-    }, []);
 
     // Scroll Interpolation Logic for Title -> Narrative (White -> Transparent)
     const RMRRef = useRef(null);
@@ -349,7 +337,7 @@ const Content = ({ onChapterChange }) => {
 
     // Effect to automatically detect stations from the DOM
     useEffect(() => {
-        if (isLoading || narrativeItems.length === 0) return;
+        if (narrativeItems.length === 0) return;
 
         // 1. Find all cards
         const leftCards = Array.from(document.querySelectorAll('.card-left'));
@@ -364,31 +352,10 @@ const Content = ({ onChapterChange }) => {
             blue: blueStops,
             orange: orangeStops
         });
-    }, [narrativeItems, isLoading]); // Run whenever items change (and initially loaded)
+    }, [narrativeItems]); // Run whenever items change (and initially loaded)
 
     // State for Dynamic Render Limiting (Scroll Blocking)
     const [renderLimit, setRenderLimit] = useState(Infinity);
-
-    if (isLoading) {
-        return (
-            <div style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 9999,
-                backgroundColor: theme.colors.background.prologue,
-                color: 'white',
-                fontSize: '1.5rem'
-            }}>
-                Carregando narrativa...
-            </div>
-        );
-    }
 
     return (
         <>
@@ -555,6 +522,48 @@ const Content = ({ onChapterChange }) => {
                 />
             </div>
         </>
+    );
+};
+
+const Content = ({ onChapterChange }) => {
+    // State for narrative items
+    const [narrativeItems, setNarrativeItems] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Load Data on Mount
+    useEffect(() => {
+        fetchNarrativeData().then(data => {
+            setNarrativeItems(data.items);
+            setIsLoading(false);
+        });
+    }, []);
+
+    if (isLoading) {
+        return (
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 9999,
+                backgroundColor: theme.colors.background.prologue,
+                color: 'white',
+                fontSize: '1.5rem'
+            }}>
+                Carregando narrativa...
+            </div>
+        );
+    }
+
+    return (
+        <NarrativeDisplay
+            onChapterChange={onChapterChange}
+            narrativeItems={narrativeItems}
+        />
     );
 };
 
