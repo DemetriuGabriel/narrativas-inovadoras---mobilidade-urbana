@@ -310,6 +310,31 @@ const MotoAccidentSimulation = ({ index, setRenderLimit, content }) => {
         return <span dangerouslySetInnerHTML={{ __html: formatted }} />;
     };
 
+    // Gradually despawn motos when finale is reached
+    useEffect(() => {
+        if (isFinale && engineRef.current) {
+            const cleanupInterval = setInterval(() => {
+                if (!engineRef.current) return;
+
+                const bodies = Matter.Composite.allBodies(engineRef.current.world);
+                const motos = bodies.filter(b => b.isMoto);
+
+                if (motos.length === 0) {
+                    clearInterval(cleanupInterval);
+                    return;
+                }
+
+                // Despawn batch (clears ~450 motos in approx 1.2s)
+                const batch = motos.slice(0, 15);
+                batch.forEach(moto => {
+                    Matter.World.remove(engineRef.current.world, moto);
+                });
+            }, 40);
+
+            return () => clearInterval(cleanupInterval);
+        }
+    }, [isFinale]);
+
     return (
         <div style={{
             position: 'relative',
@@ -366,6 +391,25 @@ const MotoAccidentSimulation = ({ index, setRenderLimit, content }) => {
                         mortes por acidente de moto nesse ano
                     </span>
                 </motion.div>
+
+                {/* Shadow Overlay to Contrast Text */}
+                <motion.div
+                    animate={{
+                        background: isFinale
+                            ? 'radial-gradient(ellipse at center, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0.7) 60%, rgba(0,0,0,0) 85%)'
+                            : 'radial-gradient(ellipse at center, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 80%)'
+                    }}
+                    transition={{ duration: 1.5 }}
+                    style={{
+                        position: 'absolute',
+                        top: '0',
+                        left: '0',
+                        width: '100%',
+                        height: '100%',
+                        zIndex: 15,
+                        pointerEvents: 'none',
+                    }}
+                />
 
                 {/* Text Section - Centered with Fade Transition */}
                 <div style={{
