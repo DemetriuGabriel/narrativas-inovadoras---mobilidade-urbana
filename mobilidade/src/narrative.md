@@ -1,5 +1,5 @@
 [component: prequel](
-## O DIA NASCE, NÓS AINDA NÃO
+## Mais um dia...
 São cinco da manhã, o dia ainda nem começou direito, mas o sol, sempre apressado no Recife, já se espalha como se houvesse um para cada habitante da cidade. O corpo sente o peso de ontem, mas a rotina não espera, não pede licença, não pergunta se você está pronto. Apenas segue.
 )
 
@@ -97,9 +97,15 @@ Victor Amaral, Gustavo Santiago, Danilo Coutinho
 **Design**
 Gustavo Santiago
 
+**Infografia**
+Victor Amaral
+
 **Desenvolvimento**
-Gustavo Santiago, Danilo Coutinho, Demetriu Gabriel, Dante, Weldon, Ricardo
+Gustavo Santiago, Danilo Coutinho, Demetriu Gabriel, Dante Santana, Weldon Pereira, Ricardo Morato, João Antônio
 
 **Orientação**
 Gustavo Santiago, Victor Amaral, Demetriu Gabriel
+
+**Agradecimentos**
+Bárbara Mirelly, Maurício Oliveira, Silvia Maciel, Gustavo Barros
 )
