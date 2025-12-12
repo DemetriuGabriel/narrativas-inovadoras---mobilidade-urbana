@@ -20,11 +20,11 @@ São cinco da manhã, o dia ainda nem começou direito, mas o sol, sempre apress
 [card: card-etapa-final]
 [07:45] A etapa final: cinco minutos de caminhada até o trabalho. finalmente, respirar.
 
-As quase duas horas de deslocamento apenas para a ida são apenas um fragmento de um quadro muito maior, que afeta milhares de pessoas. Há mais de uma década o metrô não recebe nenhuma expansão significativa, essa estagnação é um dos motivos centrais para sua perda de relevância na mobilidade da Região Metropolitana do Recife (RMR). O resultado se espalha por toda a rede: ônibus lotados, integração falha, terminais que parecem ter parado no tempo.
+As quase duas horas de deslocamento para a ida são apenas um fragmento de um quadro muito maior, que afeta milhares de pessoas. Há mais de uma década o metrô não recebe nenhuma expansão significativa, essa estagnação é um dos motivos centrais para sua perda de relevância na mobilidade da Região Metropolitana do Recife (RMR). O resultado se espalha por toda a rede: ônibus lotados, integração falha, terminais que parecem ter parado no tempo.
 
 Pesquisa realizada pelo Núcleo de Inteligência de Mercado do Centro Universitário Frassinetti do Recife (UniFafire) confirma aquilo que Mariana sente na pele todas as manhãs: quase **70%** dos usuários de transporte público na RMR dizem estar insatisfeitos com o serviço. A superlotação não é exceção, é regra, e o desconforto e a falta de segurança também. Nas paradas e terminais, a situação não melhora: espaços precários, muitas vezes mal iluminados, conservados e pensados.
 
-É nesse cenário que Mariana cruza a cidade, antes mesmo de sentar à mesa do trabalho. O relógio mal marca o começo do expediente e ela já sente o corpo pesado, a cabeça lenta, como se tivesse trabalhado uma jornada inteira apenas para chegar.
+É nesse cenário que Mariana cruza a cidade, antes mesmo de sentar à mesa do trabalho. O relógio mal marca o começo do expediente e ela já sente o corpo pesado, a cabeça lenta, como se tivesse trabalhado uma jornada inteira para chegar.
 
 Um desgaste que, como aponta a professora da UFPE e doutora em psicologia cognitiva, Silvia Maciel, não é apenas físico, mas estrutural: *“Passar duas horas para ir e voltar e começar tudo de novo cansa. Isso pode gerar, inclusive, abandono, dificuldade de rendimento e de qualidade, queda no engajamento e até mesmo no desenvolvimento de ações com competência. Se eu passo tanto tempo num desgaste físico e emocional ao longo do trânsito isso pode gerar baixa atenção, dores no corpo, desconfortos de diversas ordens."*
 
@@ -38,14 +38,14 @@ Um desgaste que, como aponta a professora da UFPE e doutora em psicologia cognit
 [16:25] Do Derby, mais um ônibus até o destino final, estação de Camaragibe e, mais de duas horas depois de ter batido o ponto, casa.
 
 
-Somando a ida e a volta, ela passa entre **3h30 e 4h** do seu dia apenas se deslocando para o trabalho. Um tempo que não cabe no relógio e escorre pelos espaços onde a vida deveria acontecer. *“A percepção de tempo é diferente. É importante que as pessoas compreendam que essa vivência do tempo do transporte é atrelada ao lugar onde se está. Se eu estivesse duas horas no carro, confortável, sentada, com climatização adequada, que pudesse me sentir segura, eu não ia sentir o desgaste que eu sinto num ônibus lotado”*, explica a psicóloga.
+Somando a ida e a volta, ela passa entre **3h30 e 4h** do seu dia se deslocando para o trabalho. Um tempo que não cabe no relógio e escorre pelos espaços onde a vida deveria acontecer. *“A percepção de tempo é diferente. É importante que as pessoas compreendam que essa vivência do tempo do transporte é atrelada ao lugar onde se está. Se eu estivesse duas horas no carro, confortável, sentada, com climatização adequada, que pudesse me sentir segura, eu não ia sentir o desgaste que eu sinto num ônibus lotado”*, explica a psicóloga.
 
 Durante todo o caminho de volta, um pensamento martelava na cabeça: “Hoje eu vou pra academia.” O plano está pago há quase um ano e ela mal tocou nele. Mas, quando finalmente chega em casa, o corpo não acompanha a intenção. A única coisa que consegue fazer é se jogar na cama e mexer no celular. Nem conversar com a mãe parece uma boa ideia. Mariana se sente culpada, pensa que é uma pessoa desmotivada, que não tem objetivos, que o problema é ela. Mas, segundo a doutora Silvia, não é bem assim: *“A pessoa não fica exatamente desmotivada. Ela fica impedida, inclusive fisicamente, de dar conta de qualquer outra coisa. Esse acúmulo de desgaste não é apenas cansaço e pode levar a um adoecimento psíquico mais sério como ansiedade e depressão.”*
 
 @[calendario.png]
 
 [card:ida-ubermoto]
-[19:00] Não há muito tempo para lamentações e reflexões, a segunda jornada não demora a chegar. A universitária já está saindo de casa rumo à faculdade, na Conde da Boa Vista. Antes de sair, abre o aplicativo e checa o preço da corrida de moto. Está “baratinho”. Uma viagem que normalmente demora 40 minutos magicamente vira 30 por apenas cinco reais a mais.
+[19:00] Não há muito tempo para lamentações e reflexões, a segunda jornada não demora a chegar. A universitária já está saindo de casa rumo à faculdade, na Conde da Boa Vista. Antes de sair, abre o aplicativo e checa o preço da corrida de moto. Está “baratinho”. Uma viagem que normalmente demora 40 minutos magicamente vira 30 por cinco reais a mais.
 
 [card:moto-acidentes]
 [19:05] Enquanto sobe na garupa, pensa que mal pode esperar para também ter uma moto só dela, novinha, brilhando na garagem. E, como tantos outros recifenses, imagina que a cidade finalmente ficará um pouquinho mais perto. 
