@@ -39,10 +39,10 @@ function App() {
   // --- CONFIGURAÇÃO DE VISIBILIDADE DAS ROTAS EXTRAS ---
   // Estado inicial das rotas (agora suporta objetos de config)
   const [routeVisibility, setRouteVisibility] = useState({
-    route: { visible: false, speed: 1 },
+    route: { visible: true, speed: 1 },
     extraRoute: { visible: false, speed: 1 },
     novotel: { visible: false, speed: 1 },
-    part7: { visible: false, speed: 1 },
+    part7: { visible: true, speed: 1 },
     part8: { visible: false, speed: 1 }
   });
   // -----------------------------------------------------
@@ -99,13 +99,17 @@ function App() {
 
   // Track map instance for DevHUD
   const [mapInstance, setMapInstance] = useState(null);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
 
   // Animation Hooks - They trigger updates internally on the map sources
-  useRouteAnimation(mapInstance, 'route-min', 'route', routeData, routeVisibility.route);
-  useRouteAnimation(mapInstance, 'extra-route-min', 'extra-route', extraRouteData, routeVisibility.extraRoute);
-  useRouteAnimation(mapInstance, 'novohotel-min', 'novohotel', novohotelDerbyData, routeVisibility.novotel);
-  useRouteAnimation(mapInstance, 'part7-min', 'part7', part7Data, routeVisibility.part7);
-  useRouteAnimation(mapInstance, 'part8-min', 'part8', part8Data, routeVisibility.part8);
+  // Only pass mapInstance when sources are fully loaded
+  const activeMap = isMapLoaded ? mapInstance : null;
+
+  useRouteAnimation(activeMap, 'route-min', 'route', routeData, routeVisibility.route);
+  useRouteAnimation(activeMap, 'extra-route-min', 'extra-route', extraRouteData, routeVisibility.extraRoute);
+  useRouteAnimation(activeMap, 'novohotel-min', 'novohotel', novohotelDerbyData, routeVisibility.novotel);
+  useRouteAnimation(activeMap, 'part7-min', 'part7', part7Data, routeVisibility.part7);
+  useRouteAnimation(activeMap, 'part8-min', 'part8', part8Data, routeVisibility.part8);
 
 
   useEffect(() => {
@@ -153,10 +157,10 @@ function App() {
       // Initialize with EMPTY data so animation starts from 0
       const emptyGeoJSON = turf.featureCollection([]);
 
-      mapRef.current.addSource('extra-route-min', { type: 'geojson', data: emptyGeoJSON });
-      mapRef.current.addSource('novohotel-min', { type: 'geojson', data: emptyGeoJSON });
-      mapRef.current.addSource('part7-min', { type: 'geojson', data: emptyGeoJSON });
-      mapRef.current.addSource('part8-min', { type: 'geojson', data: emptyGeoJSON });
+      mapRef.current.addSource('extra-route-min', { type: 'geojson', data: routeVisibility.extraRoute.visible ? extraRouteData : emptyGeoJSON });
+      mapRef.current.addSource('novohotel-min', { type: 'geojson', data: routeVisibility.novotel.visible ? novohotelDerbyData : emptyGeoJSON });
+      mapRef.current.addSource('part7-min', { type: 'geojson', data: routeVisibility.part7.visible ? part7Data : emptyGeoJSON });
+      mapRef.current.addSource('part8-min', { type: 'geojson', data: routeVisibility.part8.visible ? part8Data : emptyGeoJSON });
 
       mapRef.current.addLayer({
         id: 'extra-route-min',
@@ -202,7 +206,7 @@ function App() {
         }
       }, labelLayerId);
 
-      mapRef.current.addSource('route-min', { type: 'geojson', data: emptyGeoJSON });
+      mapRef.current.addSource('route-min', { type: 'geojson', data: routeVisibility.route.visible ? routeData : emptyGeoJSON });
 
       mapRef.current.addLayer({
         id: 'route-min',
@@ -385,6 +389,7 @@ function App() {
       };
 
       // Removed setInitialLayerVisibility - useRouteAnimation handles it via hook
+      setIsMapLoaded(true);
     });
 
     return () => {
