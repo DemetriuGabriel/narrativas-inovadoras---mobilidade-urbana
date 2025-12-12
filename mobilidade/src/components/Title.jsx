@@ -3,7 +3,8 @@ import { theme } from '../theme';
 
 const Title = ({ content, forwardRef }) => {
     // Content is expected to be the title text
-    const text = content || "Título";
+    // Parser returns array of args, take first one or join
+    const text = Array.isArray(content) ? content.join(' ') : (content || "Título");
 
     return (
         <div className="bg-zone" data-opacity="1" data-color="#fff" style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', minHeight: '50vh' }}>

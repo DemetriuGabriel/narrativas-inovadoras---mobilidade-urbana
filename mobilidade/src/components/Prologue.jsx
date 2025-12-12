@@ -10,7 +10,8 @@ const Prologue = ({ content, forwardRef }) => {
     let text = "";
 
     if (content) {
-        const lines = content.split('\n');
+        // Content might be array of strings (lines/paragraphs)
+        const lines = Array.isArray(content) ? content.flatMap(c => c.split('\n')) : content.split('\n');
         lines.forEach(line => {
             if (line.trim().startsWith('##')) {
                 title = line.replace(/^##+\s*/, '').trim();
