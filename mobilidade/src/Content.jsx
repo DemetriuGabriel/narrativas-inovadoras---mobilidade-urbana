@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import { motion, useScroll, useTransform, useInView } from 'framer-motion';
 import SubwayLines from './SubwayLines';
 import InteractionBlocker from './InteractionBlocker';
-import { narrativeData } from './narrativeData';
+import { fetchNarrativeData } from './narrativeData';
 import { theme } from './theme';
 import { componentRegistry } from './componentRegistry';
 
@@ -23,7 +23,6 @@ const findAsset = (path) => {
 // Simple markdown formatter
 const formatText = (text) => {
     if (!text) return null;
-    // Replace **bold**
     // Replace **bold**
     let formatted = text.replace(/\*\*(.*?)\*\*/g, `<b style="color: ${theme.colors.narrative.bold}">$1</b>`);
     // Replace *italic*
@@ -296,6 +295,10 @@ const NarrativeCard = ({ card, index, onChapterChange, forwardRef }) => {
 };
 
 const Content = ({ onChapterChange }) => {
+    // State for narrative items
+    const [narrativeItems, setNarrativeItems] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
     // Dynamic Background State
     // Scroll Interpolation Logic for Prologue -> Title (Black -> White)
     const titleZoneRef = useRef(null);
@@ -306,6 +309,13 @@ const Content = ({ onChapterChange }) => {
 
     const bgOverlayColor = useTransform(titleProgress, [0, 1], [theme.colors.background.prologue, theme.colors.background.title]);
 
+    // Load Data on Mount
+    useEffect(() => {
+        fetchNarrativeData().then(data => {
+            setNarrativeItems(data.items);
+            setIsLoading(false);
+        });
+    }, []);
 
     // Scroll Interpolation Logic for Title -> Narrative (White -> Transparent)
     const RMRRef = useRef(null);
@@ -339,6 +349,8 @@ const Content = ({ onChapterChange }) => {
 
     // Effect to automatically detect stations from the DOM
     useEffect(() => {
+        if (isLoading || narrativeItems.length === 0) return;
+
         // 1. Find all cards
         const leftCards = Array.from(document.querySelectorAll('.card-left'));
         const rightCards = Array.from(document.querySelectorAll('.card-right'));
@@ -352,10 +364,31 @@ const Content = ({ onChapterChange }) => {
             blue: blueStops,
             orange: orangeStops
         });
-    }, []); // Run ONCE on mount
+    }, [narrativeItems, isLoading]); // Run whenever items change (and initially loaded)
 
     // State for Dynamic Render Limiting (Scroll Blocking)
     const [renderLimit, setRenderLimit] = useState(Infinity);
+
+    if (isLoading) {
+        return (
+            <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 9999,
+                backgroundColor: theme.colors.background.prologue,
+                color: 'white',
+                fontSize: '1.5rem'
+            }}>
+                Carregando narrativa...
+            </div>
+        );
+    }
 
     return (
         <>
@@ -386,7 +419,7 @@ const Content = ({ onChapterChange }) => {
             {/* === ZONE 2: TRANSPARENT BACKGROUND === */}
             <div className="bg-zone" data-opacity="0" style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
-                {narrativeData.items.map((item, index) => {
+                {narrativeItems.map((item, index) => {
                     // Truncate content if index exceeds limit
                     if (index > renderLimit) return null;
 
@@ -396,7 +429,7 @@ const Content = ({ onChapterChange }) => {
                     // Better: define it once outside. But I can't check 'narrativeData' easily outside without processing.
                     // Let's rely on the fact that Prequel is 0, Title is 1. So Body is 2.
                     // But to be robust:
-                    const isBodyStart = index === narrativeData.items.findIndex(i =>
+                    const isBodyStart = index === narrativeItems.findIndex(i =>
                         !(i.type === 'component' && (i.componentName === 'prequel' || i.componentName === 'title'))
                     );
 
@@ -506,14 +539,14 @@ const Content = ({ onChapterChange }) => {
                         if (!el) return;
 
                         // Check First Card (RMRRef)
-                        const firstCardIdx = narrativeData.items.findIndex(i => i.type === 'card');
+                        const firstCardIdx = narrativeItems.findIndex(i => i.type === 'card');
                         // If card doesn't exist OR if it's clipped by renderLimit, we must attach ref here
                         if (firstCardIdx === -1 || firstCardIdx > renderLimit) {
                             if (RMRRef && !RMRRef.current) RMRRef.current = el;
                         }
 
                         // Check Title (titleZoneRef)
-                        const titleIdx = narrativeData.items.findIndex(i => i.componentName === 'title');
+                        const titleIdx = narrativeItems.findIndex(i => i.componentName === 'title');
                         // If title doesn't exist OR if it's clipped by renderLimit AND we haven't attached it yet
                         if (titleIdx === -1 || titleIdx > renderLimit) {
                             if (titleZoneRef && !titleZoneRef.current) titleZoneRef.current = el;
@@ -526,5 +559,6 @@ const Content = ({ onChapterChange }) => {
 };
 
 export default Content;
+
 
 
