@@ -143,7 +143,7 @@ export const routeTriggers = {
         part8: false
     },
     'card-camaragibe': {
-        route: false,
+        route: true,
         extraRoute: false,
         novotel: false,
         part7: false,
@@ -178,6 +178,13 @@ export const routeTriggers = {
         part8: false
     },
     'ida-ubermoto': {
+        part8: true,
+        part7: false,
+        novotel: false,
+        extraRoute: false,
+        route: false
+    },
+    'conclusao-banho': {
         part8: true,
         part7: false,
         novotel: false,
