@@ -525,7 +525,7 @@ const NarrativeDisplay = ({ onChapterChange, narrativeItems }) => {
     );
 };
 
-const Content = ({ onChapterChange }) => {
+const Content = ({ onChapterChange, showAlarm }) => {
     // State for narrative items
     const [narrativeItems, setNarrativeItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -558,6 +558,8 @@ const Content = ({ onChapterChange }) => {
             </div>
         );
     }
+
+    if (showAlarm) return null;
 
     return (
         <NarrativeDisplay

@@ -510,7 +510,7 @@ function App() {
         <div className={!showAlarm ? "content-container" : ""} style={{ position: 'relative', zIndex: 1, width: '100%', pointerEvents: 'none' }}>
           <div style={{ position: 'relative', width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {/* Pass handleChapterChange to Content */}
-            <Content onChapterChange={handleChapterChange} />
+            <Content onChapterChange={handleChapterChange} showAlarm={showAlarm} />
           </div>
         </div>
       </MapInteractionContext.Provider >
