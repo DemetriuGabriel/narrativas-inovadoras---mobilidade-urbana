@@ -12,6 +12,7 @@ import routeData from './assets/route.json';
 import extraRouteData from './assets/osm_elements_part5.json';
 import novohotelDerbyData from './assets/osm_elements_part6.json';
 import part7Data from './assets/osm_elements_part7.json';
+import part8Data from './assets/osm_elements_part8.json';
 import { preloadChapter } from './preloadUtils';
 import { getChapters } from './storyConfig';
 import AlarmScreen from './AlarmScreen';
@@ -101,6 +102,10 @@ function App() {
     return turf.buffer(part7Data, 0.005, { units: 'kilometers' });
   }, []);
 
+  const part8Buffered = useMemo(() => {
+    return turf.buffer(part8Data, 0.005, { units: 'kilometers' });
+  }, []);
+
   useEffect(() => {
     mapboxgl.accessToken = 'pk.eyJ1IjoiZGpjbzIxIiwiYSI6ImNtaXA3cDBlejBhaW0zZG9sbXZpOHFhYnQifQ.Bo43glKkuVwj310Z-L58oQ'
 
@@ -156,6 +161,11 @@ function App() {
         data: part7Data
       });
 
+      mapRef.current.addSource('part8-min', {
+        type: 'geojson',
+        data: part8Data
+      });
+
       mapRef.current.addLayer({
         id: 'extra-route-min',
         type: 'line',
@@ -184,6 +194,17 @@ function App() {
         source: 'part7-min',
         paint: {
           'line-color': theme.colors.transport.busLineBack,
+          'line-width': theme.map.layers.lineWidth,
+          'line-opacity': 1
+        }
+      }, labelLayerId);
+
+      mapRef.current.addLayer({
+        id: 'part8-min',
+        type: 'line',
+        source: 'part8-min',
+        paint: {
+          'line-color': theme.colors.transport.busLine,
           'line-width': theme.map.layers.lineWidth,
           'line-opacity': 1
         }
@@ -257,6 +278,11 @@ function App() {
         data: part7Buffered
       });
 
+      mapRef.current.addSource('part8', {
+        type: 'geojson',
+        data: part8Buffered
+      });
+
       mapRef.current.addLayer({
         id: 'extra-route',
         type: 'fill-extrusion',
@@ -306,6 +332,27 @@ function App() {
         minzoom: 15,
         paint: {
           'fill-extrusion-color': theme.colors.transport.busLineBack,
+          'fill-extrusion-height': [
+            'interpolate',
+            ['linear'],
+            ['zoom'],
+            15,
+            0,
+            15.05,
+            theme.map.layers.extrusionHeight
+          ],
+          'fill-extrusion-base': 0,
+          'fill-extrusion-opacity': 1
+        }
+      }, labelLayerId);
+
+      mapRef.current.addLayer({
+        id: 'part8',
+        type: 'fill-extrusion',
+        source: 'part8',
+        minzoom: 15,
+        paint: {
+          'fill-extrusion-color': theme.colors.transport.busLine,
           'fill-extrusion-height': [
             'interpolate',
             ['linear'],

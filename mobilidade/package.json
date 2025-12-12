@@ -14,6 +14,7 @@
     "@turf/turf": "^7.3.1",
     "framer-motion": "^12.23.25",
     "mapbox-gl": "^3.17.0",
+    "matter-js": "^0.20.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwindcss": "^4.1.17"
