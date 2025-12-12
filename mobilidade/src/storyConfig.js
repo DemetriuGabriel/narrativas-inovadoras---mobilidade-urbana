@@ -185,7 +185,7 @@ export const routeTriggers = {
         route: false
     },
     'conclusao-banho': {
-        part8: true,
+        part8: false,
         part7: false,
         novotel: false,
         extraRoute: false,
@@ -197,5 +197,8 @@ export const routeTriggers = {
         novotel: true,
         extraRoute: true,
         route: true
-    }
+    },
+    'inicio-bike': {
+        part8: true
+    },
 };
