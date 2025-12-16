@@ -2,7 +2,7 @@
     "rewrites": [
         {
             "source": "/api/narrative",
-            "destination": "https://docs.google.com/uc?export=download&id=1-o0LleJ9kcmERDP5eEfd_H_wV0R2FnXy"
+            "destination": "https://docs.google.com/document/d/1c8DHYAHgr9byHNzQWteyTwplLbhnLIGY00c22EQU87k/export?format=md&tab=t.0"
         },
         {
             "source": "/(.*)",

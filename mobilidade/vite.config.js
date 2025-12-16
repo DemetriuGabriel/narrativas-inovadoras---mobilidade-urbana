@@ -13,7 +13,7 @@ export default defineConfig({
         server.middlewares.use('/api/narrative', async (req, res, next) => {
           try {
             // Fetch from Google Drive (Node.js can follow redirects and ignore CORS)
-            const driveResponse = await fetch('https://docs.google.com/uc?export=download&id=1-o0LleJ9kcmERDP5eEfd_H_wV0R2FnXy');
+            const driveResponse = await fetch('https://docs.google.com/document/d/1c8DHYAHgr9byHNzQWteyTwplLbhnLIGY00c22EQU87k/export?format=md&tab=t.0');
 
             if (!driveResponse.ok) {
               throw new Error(`Drive responded with ${driveResponse.status}`);

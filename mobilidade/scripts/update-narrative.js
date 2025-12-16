@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Constants
-const DRIVE_URL = 'https://docs.google.com/uc?export=download&id=1-o0LleJ9kcmERDP5eEfd_H_wV0R2FnXy';
+const DRIVE_URL = 'https://docs.google.com/document/d/1c8DHYAHgr9byHNzQWteyTwplLbhnLIGY00c22EQU87k/export?format=md&tab=t.0';
 // Resolve path relative to this script (assumed to be in /scripts or root? User didn't specify, I'll put it in root/scripts)
 // Let's assume this script runs from project root via npm, but let's be safe.
 // Target: src/narrative.md
